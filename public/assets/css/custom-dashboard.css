@@ -1,0 +1,109 @@
+/* Custom CSS */
+
+.preview-text {
+    font-weight: 800;
+    font-size: 13px;
+}
+
+.seo-preview-box {
+    margin: 20px 10px 30px;
+}
+
+.seo-preview-title {
+    color: #1906a7;
+    font-size: 21px;
+    margin-bottom: 7px;
+    text-transform: capitalize;
+}
+
+.seo-preview-link a {
+    color: #006627;
+    font-size: 16px;
+}
+
+.seo-preview-description {
+    font-size: 15px;
+    color: #808080;
+}
+
+.seo-preview-link {
+    width: 100%;
+    height: 23px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Error Border */
+
+.error-border {
+    border-color: #dc3545 !important;
+}
+
+.error-color {
+    color: #dc3545 !important;
+}
+
+.form-steps {
+    padding: 20px;
+}
+
+/* Loading */
+
+.loading-icon {
+    display: none;
+}
+
+.show-loading {
+    overflow: hidden;
+}
+
+.dashboard-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #0000009e;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    /* display: flex; */
+    justify-content: center;
+    align-items: center;
+    font-size: 5em;
+    color: #ffff;
+}
+
+
+.form-steps .goto-step {
+    width: 100px;
+    background: #E87503;
+    font-weight: bold;
+    color: white;
+    border: 0 none;
+    border-radius: 0px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 0px 10px 5px;
+    float: right;
+}
+
+.form-steps .goto-step.prev {
+    width: 100px;
+    background: #616161;
+    font-weight: bold;
+    color: white;
+    border: 0 none;
+    border-radius: 0px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 5px 10px 0px;
+    float: right;
+}
+
+.form-steps .goto-step:hover, .form-steps .goto-step:focus {
+    background-color: #311B92;
+}
+
+.form-steps .goto-step.prev:hover, .form-steps .goto-step.prev:focus {
+    background-color: #000000;
+}

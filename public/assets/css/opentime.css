@@ -1,0 +1,16 @@
+.open-edit-hours {display: block; padding: 30px}
+.modal {max-width: 870px}
+.inner-ft-row + .inner-ft-row.added .agg-orari, 
+.inner-ft-row.added:first-child .del-orari {
+    display: none;
+}
+.agg-orari {
+    font-size: 11px;
+}
+.added .del-orari {
+    display: block;
+}
+
+.del-orari {
+    display: none;
+}

@@ -1,0 +1,224 @@
+<?php
+
+namespace App\Http\Controllers;
+use Illuminate\Pagination\Paginator;
+
+
+use Illuminate\Http\Request;
+Use DB;
+use App\Models\Businesses;
+
+class Business extends Controller
+{
+    public $per_page = 5;
+    public function index()
+    {
+        return view('business/search');
+    }
+
+    public function profile()
+    {
+        return view('home/business/profile');
+    }
+
+    public function search($parms)
+    {
+        $category='';
+        $term='';
+        $location='';
+        $slug='';
+
+        $parms = $this->extract_parms($parms);
+        for($i=0; $i<count($parms); $i++) {
+            extract($parms[$i]);
+        }
+        echo $term;
+        echo $location;
+        die;
+        // print_r($request->all());
+        $select = $this->genrate_selected_fields();
+        $sql = "SELECT ".$select." FROM businesses WHERE ";
+        $terms_where = '';
+        $location_where = '';
+        $slug_where = '';
+        $category_where = '';
+        if (true) {
+            if ($term != "" && $location != "") {
+                $terms = explode(' ',$term);
+                $term_count = count($terms);
+                for ($i=0; $i < $term_count; $i++) { 
+                    $terms_where .= $this->genrate_sql('term',$terms[$i]);
+                    $terms_where .= ' OR';
+                }
+                $terms_where = substr($terms_where, 0, -2);
+                $location_where = $this->genrate_sql('location',$location);
+                $sql .= $terms_where." AND ".$location_where;
+                $data['term'] = $term;
+                $data['location'] = $location;
+            } elseif ($term != "") {
+                $terms = explode(' ',$term);
+                $term_count = count($terms);
+                for ($i=0; $i < $term_count; $i++) { 
+                    $sql .= $this->genrate_sql('term',$terms[$i]);
+                    $sql .= ' OR';
+                }
+                $sql = substr($sql, 0, -2);
+                $data['term'] = $term;
+            } elseif ($location != "") {
+                echo 'Hello';
+                $sql .= $this->genrate_sql('location',$location);
+                $data['location'] = $location;
+            }
+        }
+
+        echo $sql;
+        // die;
+
+        $data['businesses'] = DB::select($sql);
+        // $data['businesses'] = DB::select("SELECT ".$select." FROM businesses");
+        $count = count($data['businesses']);
+        if (count($data['businesses']) != 0) {
+            $bussiness_json = json_encode($data['businesses']);
+        } else {
+            $data['error'] = "We couldn't found any Business. Try somthing else.";
+        }
+        // Pagination Variabls
+        $data['show_pagiation']['status'] = 'no';
+        if($count > $this->per_page) {
+            $data['show_pagiation']['status'] = 'yes';
+        }
+        $data['show_pagiation']['per_page'] = $this->per_page;
+        $data['show_pagiation']['total_listings'] = $count;
+        $data['show_pagiation']['pages'] = $this->pagination_pages_count($count);
+        // $data['listing_json'] = $bussiness_json;
+        $data['pagination_json'] =  json_encode($data['show_pagiation']);
+        return view('home/business/search',$data);
+    }
+
+    public function search_with_parms($parms)
+    {
+        echo $parms;
+    }
+
+    public function search_page(Request $request)
+    {
+        $data['businesses'] = DB::select("SELECT * FROM businesses");
+        $count = count($data['businesses']);
+        if (count($data['businesses']) != 0) {
+            $bussiness_json = json_encode($data['businesses']);
+        } else {
+            $data['error'] = "We couldn't found any thing. Try somthing else.";
+        }
+        $data['show_pagiation']['status'] = 'no';
+        if($count > $this->per_page) {
+            $data['show_pagiation']['status'] = 'yes';
+        }
+        $data['show_pagiation']['per_page'] = $this->per_page;
+        $data['show_pagiation']['total_listings'] = $count;
+        $data['show_pagiation']['pages'] = $this->pagination_pages_count($count);
+        $data['listing_json'] = $bussiness_json;
+        $data['pagination_json'] =  json_encode($data['show_pagiation']);
+        return view('home/business/search',$data);
+    }
+
+    public function genrate_sql($type,$keyword,$table='')
+    {
+        // echo '<p><hr></p>';
+        $sql = '';
+        if ($type=='term') {
+            # Name
+            $sql .= "( name LIKE '%{$keyword}%' ";
+            $sql .= " OR short_desc LIKE '%{$keyword}%' ";
+            $sql .= " OR parent_category_text LIKE '%{$keyword}%' ";
+            $sql .= " OR sub_category_text LIKE '%{$keyword}%' ";
+            $sql .= " OR stitle_1 LIKE '%{$keyword}%' ";
+            $sql .= " OR stitle_2 LIKE '%{$keyword}%' ";
+            $sql .= " OR stitle_3 LIKE '%{$keyword}%' ";
+            $sql .= " OR stitle_4 LIKE '%{$keyword}%' ";
+            $sql .= " OR stitle_5 LIKE '%{$keyword}%' ";
+            $sql .= " OR stitle_6 LIKE '%{$keyword}%' ";
+            $sql .= " OR meta_desc LIKE '%{$keyword}%' ";
+            $sql .= " OR mtitle LIKE '%{$keyword}%' )";
+        }
+
+        if ($type=='location') {
+            # Name
+            $sql .= "( country LIKE '%{$keyword}%' ";
+            $sql .= " OR state_text LIKE '%{$keyword}%' ";
+            $sql .= " OR city_text LIKE '%{$keyword}%' ";
+            $sql .= " OR buildingname LIKE '%{$keyword}%' ";
+            $sql .= " OR streetname LIKE '%{$keyword}%' )";
+        }
+
+        // echo $sql;
+        return $sql;
+    }
+
+    public function genrate_selected_fields()
+    {
+        $select = '';
+        $select .= 'name,';
+        $select .= 'short_desc,';
+        $select .= 'pcategories,';
+        $select .= 'parent_category_text,';
+        $select .= 'categories,';
+        $select .= 'sub_category_text,';
+        $select .= 'logo,';
+        $select .= 'snipshot,';
+        $select .= 'phone,';
+        $select .= 'phone_text,';
+        $select .= 'email,';
+        $select .= 'whatsapp,';
+        $select .= 'office,';
+        $select .= 'floor,';
+        $select .= 'buildingname,';
+        $select .= 'streetname,';
+        $select .= 'city_text,';
+        $select .= 'country,';
+        $select .= 'mon_open_time,';
+        $select .= 'review_stars,';
+        $select .= 'stitle_1,';
+        $select .= 'stitle_2,';
+        $select .= 'stitle_3,';
+        $select .= 'stitle_4,';
+        $select .= 'stitle_5,';
+        $select .= 'stitle_6';
+
+        return $select;
+    }
+
+    public function pagination_pages_count($results)
+    {
+        $digit = $results/$this->per_page;
+        $rounded = round($results/$this->per_page);
+        $total_pages = $rounded;
+        if ($digit > $rounded) {
+            $total_pages = intval($rounded)+1;
+        }
+
+        return $total_pages;
+    }
+
+    public function extract_parms($parms)
+    {
+        // echo $parms;
+        $parms_array = [];
+        if (strpos($parms, '|')) {
+            $parms = explode('|',$parms);
+            for ($i=0; $i < count($parms); $i++) {
+                echo $parms[$i];
+                if (strpos($parms[$i], ',')) {
+                    $sub_params = explode(',',$parms[$i]);
+                    print_r($sub_params);
+                    if($sub_params[0] == '' || $sub_params[1] == "" || $sub_params[1] == "null"){
+                        unset($parms[$i]);
+                    } else {
+                        array_push($parms_array,[$sub_params[0] => $sub_params[1]]);
+                        // print_r($temp_array);
+                    }
+                }
+            }
+            return $parms_array;
+        }
+    }
+}
