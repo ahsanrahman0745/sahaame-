@@ -489,7 +489,8 @@ if ($listing_count > $show_pagiation['per_page']) {
             <div class="card_center">
                 <a href="{{$link}}">
                 <span class="card_heading">
-                    <?php echo $business->name; ?>
+<!--                    --><?php //echo $business->name; ?>
+                        {{Str::limit($business->name, 25)}}
                 </span>
                     <a>
                         <span class="card_detail"><?php echo $business->short_desc; ?> &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; <span
@@ -543,28 +544,36 @@ if ($listing_count > $show_pagiation['per_page']) {
                         <div class="row">
                             <span class="txt-location"><i class="fas fa-map-marker-alt"></i>&nbsp;&nbsp;&nbsp;<span
                                     class="text-blue"> <span style="font-weight: 700;">
-                                      <?php if ($business->floor != '') {
-                                            echo $business->floor;
-                                        } ; ?>
-                                        <?php if ($business->office != '') {
-                                            echo ", " . $business->office;
-                                        } ; ?>
-                                        <?php if ($business->buildingname != '') {
-                                            echo ", " . $business->buildingname;
-                                        } ; ?>
-                                        <?php if ($business->streetname != '') {
-                                            echo ", " . $business->streetname;
-                                        } ; ?>
-                                        <?php if ($business->city_text != '') {
-                                            echo ", " . $business->city_text;
-                                        } ; ?>
-                                        <?php if ($business->state_text != '') {
-                                            echo ", " . $business->state_text;
-                                        } ; ?>
-                                        <?php if ($business->country != '') {
-                                            echo ", " . $business->country;
-                                        } ; ?>
-                                        {{--                                          <span class='dots'>...</span>--}}
+                                      @if ($business->floor != '')
+{{--                                            echo $business->floor;--}}
+                                            {{Str::limit($business->floor, 5)}}
+                                          @endif
+                                          @if ($business->office != '')
+
+{{--                                              echo ", " . $business->office;--}}
+                                          {{Str::limit($business->office, 5)}}
+{{--                                          } ; ?>--}}
+                                          @endif
+                                          @if ($business->buildingname != '')
+{{--                                              echo ", " . $business->buildingname;--}}
+                                          {{Str::limit($business->buildingname, 5)}}
+                                          @endif
+                                          @if ($business->streetname != '')
+{{--                                              echo ", " . $business->streetname;--}}
+                                          {{Str::limit($business->streetname, 5)}}
+                                          @endif
+                                         @if ($business->city_text != '')
+{{--//                                              echo ", " . $business->city_text;--}}
+                                              {{Str::limit($business->city_text, 5)}}
+                                         @endif
+                                          @if ($business->state_text != '')
+                                              {{Str::limit($business->state_text, 5)}}
+{{--                                              echo ", " . $business->state_text;--}}
+                                          @endif
+                                          <?php if ($business->country != '') {
+                                              echo ", " . $business->country;
+                                          } ; ?>
+                                          {{--                                          <span class='dots'>...</span>--}}
                             </span>
                         </div>
                         <div class="row">

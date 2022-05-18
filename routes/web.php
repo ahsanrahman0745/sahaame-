@@ -52,6 +52,7 @@ use App\Http\Livewire\AddUser;
 
 // TheIRF Controllers
 use App\Http\Controllers\ManageUsers;
+use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\GuestUser;
 use App\Http\Controllers\ListingReview;
 use App\Http\Controllers\FollowListing;
@@ -244,12 +245,23 @@ Route::get('/login',[ManageUsers::class, 'login_form']);
 Route::get('/portal/login',[ManageUsers::class, 'login_form']);
 Route::post('/admin/login',[ManageUsers::class, 'login']);
 Route::get('/logout',[ManageUsers::class, 'logout']);
+
 // Guest Login
 Route::get( 'guest/login' , [ GuestUser::class, 'login_form' ] );
 Route::get( 'guest/signup' , [ GuestUser::class, 'signup_form' ] );
+
+//forgetpassword
+Route::get( 'guest/forgetpassword' , [GuestUser::class, 'forget_form'] );
+Route::post('guest/forgetpassword', [GuestUser::class, 'submitForgetPasswordForm'])->name('forget.password.post');
+Route::get('guest/reset-password/{token}', [GuestUser::class, 'showResetPasswordForm'])->name('reset.password.get');
+Route::post('guest/reset-password', [GuestUser::class, 'submitResetPasswordForm'])->name('reset.password.post');
+
 Route::post( 'guest/login' , [ GuestUser::class, 'login' ] );
 Route::get( 'guest/logout' , [ GuestUser::class, 'logout' ] );
 Route::post( 'guest/verify-email/{parms}' , [ GuestUser::class, 'verify_email' ] );
+
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 // ------- Ajax ROUTES -------- //
 Route::post( 'guest/signup' , [ GuestUser::class, 'signup' ] );

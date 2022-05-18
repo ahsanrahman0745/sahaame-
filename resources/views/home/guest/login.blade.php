@@ -102,7 +102,9 @@
                                                         <div class="guest-login-signup-with-social-outer">
                                                             <div class="guest-login-signup-with-social-inner">
                                                                 <div class="guest-login-signup-with-social-image">
+                                                                    <a href="{{ url('auth/google') }}">
                                                                     <img src="{{asset('business/assets/images/login/google.png')}}" alt="">
+                                                                    </a>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -129,7 +131,7 @@
                                                                     <span class='view-password' id='show-password'><span class="ti-eye"></span></span>
                                                                 </div>
                                                                 <div class="forget-link">
-                                                                    <a href="{{url('#')}}">Forgotten your password?</a>
+                                                                    <a href="{{url('guest/forgetpassword')}}">Forgotten your password?</a>
                                                                 </div>
                                                                 <div class="guest-login-button">
                                                                     <div class="guest-login-button-outer">

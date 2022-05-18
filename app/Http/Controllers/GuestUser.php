@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\GuestUsers;
 use DB;
+use Illuminate\Support\Facades\Mail;
 use Session;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -19,6 +21,8 @@ class GuestUser extends Controller
         $data['page_title'] = "Guest Login | Sahaa.me";
         return view('home/guest/login',$data);
     }
+
+
 
     public function login(Request $request)
     {
@@ -152,7 +156,7 @@ class GuestUser extends Controller
         } else {
             return redirect()->back();
         }
-        
+
     }
 
     public function update_profile_image(Request $request)
@@ -168,7 +172,7 @@ class GuestUser extends Controller
         } else {
             return redirect()->back();
         }
-        
+
     }
 
     public function update_profile(Request $request)
@@ -183,7 +187,7 @@ class GuestUser extends Controller
         }
 
         $guest_password = Auth::user()->password;
-        
+
         if(isset($request->update_login)) {
             $guest_data = DB::select("SELECT password FROM users WHERE id = {$guest_id}");
             $guest_data = $guest_data[0];
@@ -203,6 +207,78 @@ class GuestUser extends Controller
             }
         }
         return redirect()->back();
+    }
+
+    public function forget_form()
+    {
+        $data['page_title'] = "Guest Login | Sahaa.me";
+        return view('home/guest/forget_password',$data);
+    }
+    /**
+     * Write code on Method
+     *
+     * @return response()
+     */
+    public function submitForgetPasswordForm(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users',
+        ]);
+
+        $token = Str::random(64);
+
+        DB::table('password_resets')->insert([
+            'email' => $request->email,
+            'token' => $token,
+            'created_at' => Carbon::now()
+        ]);
+
+        Mail::send('home.forgetPasswordMail', ['token' => $token], function($message) use($request){
+            $message->to($request->email);
+            $message->subject('Reset Password');
+        });
+
+        return back()->with('message', 'We have e-mailed your password reset link!');
+    }
+    /**
+     * Write code on Method
+     *
+     * @return response()
+     */
+    public function showResetPasswordForm($token) {
+        return view('home.guest.forgetPasswordLink', ['token' => $token]);
+    }
+
+    /**
+     * Write code on Method
+     *
+     * @return response()
+     */
+    public function submitResetPasswordForm(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users',
+            'password' => 'required|string|min:6|confirmed',
+            'password_confirmation' => 'required'
+        ]);
+
+        $updatePassword = DB::table('password_resets')
+            ->where([
+                'email' => $request->email,
+                'token' => $request->token
+            ])
+            ->first();
+
+        if(!$updatePassword){
+            return back()->withInput()->with('error', 'Invalid token!');
+        }
+
+        $user = User::where('email', $request->email)
+            ->update(['password' => Hash::make($request->password)]);
+
+        DB::table('password_resets')->where(['email'=> $request->email])->delete();
+
+        return redirect('/login')->with('message', 'Your password has been changed!');
     }
 
 }
