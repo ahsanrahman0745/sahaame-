@@ -448,7 +448,7 @@ if ($listing_count > $show_pagiation['per_page']) {
                     <span class="next"><i class="fas fa-chevron-right"></i></span>
                     <span class="prev"><i class="fas fa-chevron-left"></i></span>
                     <div class="round_img"><img src="assets/img/image-003.jpg" alt=""></div>
-                    <div class="content">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores, quaerat?
+                    <div class="content">Lorem ipsum dolor sit amet consectetur adipisicing elit.
                     </div>
                     <div class="footer_review">
                         <div class="starts">
@@ -536,10 +536,14 @@ if ($listing_count > $show_pagiation['per_page']) {
                                     </a>
                                 </div>
                             @endif
+                                @if($business->website != '')
                             <div class="info_col">
+                                <a href="{{$business->website}}">
                                 <i class="text-blue fas fa-globe"></i>
                                 <span>Website</span>
+                                </a>
                             </div>
+                                @endif
                         </div>
                         <div class="row">
                             <span class="txt-location"><i class="fas fa-map-marker-alt"></i>&nbsp;&nbsp;&nbsp;<span
@@ -577,8 +581,26 @@ if ($listing_count > $show_pagiation['per_page']) {
                             </span>
                         </div>
                         <div class="row">
-                            <span class="clock"><i class="far fa-clock"></i>&nbsp;&nbsp;&nbsp;<span class="orange"
-                                                                                                    style="font-weight: 700;">Opens at</span>&nbsp;<?php  echo $business->mon_open_time; ?></span>
+
+                            <?php
+//                            $openingTime = \Illuminate\Support\Carbon::parse($business->mon_open_time);
+//                            $closeTime = \Illuminate\Support\Carbon::parse($business->mon_close_time);
+//                            $mytime = Carbon\Carbon::now();
+//                            $date = date('H:00', time());
+//                            if($business->mon_open_time < now() && $business->mon_close_time > now()){
+//                                echo 'ok';
+//                            }else{
+//                                echo 'no';
+//                            }
+//                            dd('1');
+
+                            ?>
+                            @if($business->mon_open_time < now() && $business->mon_close_time > now())
+
+                            <span class="clock"><i class="far fa-clock"></i>&nbsp;&nbsp;&nbsp;<span class="orange" style="font-weight: 700;">Opens</span>&nbsp</span>
+                                @else
+                                    <span class="clock"><i class="far fa-clock"></i>&nbsp;&nbsp;&nbsp;<span class="orange" style="font-weight: 700;">Closed</span>&nbsp;Open at {{$business->mon_open_time}}</span>
+                                @endif
                         </div>
                         <div class="row">
                             <ul class="spec">

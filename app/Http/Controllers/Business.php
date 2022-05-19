@@ -111,10 +111,10 @@ class Business extends Controller
             array_push($sql_array,$star_where);
             $data['star'] = $request->star;
         }
-        
+
         $sql = ($temp_counter != 0) ? $sql." WHERE " : $sql ;
         $track = ($temp_counter != 0) ? true : false ;
-        
+
         if($track) {
             $search_trackings->save();
         }
@@ -141,7 +141,7 @@ class Business extends Controller
         } else {
             $data['error'] = "We couldn't found any Business. Try somthing else.";
         }
-        
+
         // GET Categories
         $all_categories = $this->extract_categories($data['businesses']);
         $sql = "SELECT id,name FROM business_categories WHERE ";
@@ -190,6 +190,7 @@ class Business extends Controller
         $meta_where='';
         $star_where='';
         $select = $this->genrate_selected_fields();
+        dd($select);
         $sql = "SELECT ".$select." FROM businesses";
         $order_by = 'ORDER BY id DESC';
         $temp_counter = 0;
@@ -268,7 +269,7 @@ class Business extends Controller
         if($track) {
             $search_trackings->save();
         }
-        
+
         // Join SQL
         $final_sql = '';
         for ($i=0; $i<count($sql_array); $i++) {
@@ -291,7 +292,7 @@ class Business extends Controller
         } else {
             $data['error'] = "We couldn't found any Business. Try somthing else.";
         }
-        
+
         // GET Categories
         $all_categories = $this->extract_categories($data['businesses']);
         $sql = "SELECT id,name FROM business_categories WHERE ";
@@ -388,6 +389,7 @@ class Business extends Controller
         $select .= 'phone_text,';
         $select .= 'email,';
         $select .= 'whatsapp,';
+        $select .= 'website,';
         $select .= 'office,';
         $select .= 'floor,';
         $select .= 'buildingname,';
@@ -396,6 +398,7 @@ class Business extends Controller
         $select .= 'state_text,';
         $select .= 'country,';
         $select .= 'mon_open_time,';
+        $select .= 'mon_close_time,';
         $select .= 'review_stars,';
         $select .= 'stitle_1,';
         $select .= 'stitle_2,';
